@@ -1,132 +1,202 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Regalo de cumpleaños</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: #f8e1f4;
-      font-family: "Poppins", sans-serif;
-      flex-direction: column;
-      text-align: center;
-      overflow: hidden;
+    /* --- Reset mínimo y layout --- */
+    :root{
+      --accent:#ff4d88;
+      --bg:#f8e1f4;
+      --text:#333;
     }
-    #gift {
-      width: 200px;
-      height: 200px;
-      background: url('https://cdn-icons-png.flaticon.com/512/3468/3468377.png') no-repeat center/contain;
-      cursor: pointer;
-      transition: transform 0.2s ease;
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+    body{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      height:100vh;
+      background:var(--bg);
+      color:var(--text);
+      text-align:center;
+      overflow:hidden;
+      padding:20px;
     }
-    #gift:active {
-      transform: scale(0.95);
+
+    /* --- Regalo --- */
+    #gift{
+      width:200px;height:200px;
+      background:url('https://cdn-icons-png.flaticon.com/512/3468/3468377.png') no-repeat center/contain;
+      cursor:pointer;
+      transition:transform .12s ease, filter .2s ease;
+      user-select:none;
+      -webkit-user-select:none;
     }
-    #counter, #timer, #message {
-      margin-top: 20px;
-      font-size: 1.2em;
+    #gift:active{transform:scale(.96)}
+    #counter,#timer,#message{margin-top:18px;font-size:1.1rem}
+    #message{font-size:1.2rem;font-weight:600;color:#d63384}
+    #finalMessage{font-size:1.6rem;font-weight:700;color:#d63384;margin-top:18px}
+
+    /* --- Botón celebrar --- */
+    #celebrateBtn{
+      display:none;
+      margin-top:28px;
+      padding:12px 18px;
+      font-size:1.1rem;
+      background:var(--accent);
+      color:white;border:none;border-radius:12px;cursor:pointer;
+      box-shadow:0 6px 16px rgba(0,0,0,.12);
     }
-    #message {
-      font-size: 1.5em;
-      font-weight: bold;
-      color: #d63384;
-    }
-    #finalMessage {
-      font-size: 2em;
-      font-weight: bold;
-      color: #d63384;
-      margin-top: 30px;
-    }
-    #celebrateBtn {
-      display: none;
-      margin-top: 40px;
-      padding: 15px 25px;
-      font-size: 1.5em;
-      background: #ff4d88;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    #celebrateBtn:hover {
-      background: #e60073;
-    }
-    canvas {
+    #celebrateBtn:hover{filter:brightness(.95)}
+
+    /* --- Canvas confetti --- */
+    canvas{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:10}
+
+    /* --- Pestaña lateral oculta (solo para ti) --- */
+    .secret-tab {
       position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
+      right: 0;
+      top: 40%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.6);
+      color: white;
+      padding: 8px 10px;
+      border-radius: 8px 0 0 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      z-index: 50;
+      transition: right .25s ease;
+    }
+    .secret-tab:hover { right: 6px; }
+
+    /* Panel de contraseña (overlay) */
+    .secret-panel {
+      position: fixed;
+      right: 12px;
+      top: 35%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.98);
+      padding: 14px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      z-index: 60;
+      width: 260px;
+      display: none;
+    }
+    .secret-panel h4{margin:0 0 8px 0;font-size:1rem;color:var(--text)}
+    .secret-panel input{
+      width:100%;
+      padding:8px 10px;
+      border-radius:8px;border:1px solid #ddd;font-size:0.98rem;
+      margin-bottom:8px;
+    }
+    .secret-panel button{
+      width:100%;
+      padding:8px 10px;border-radius:8px;border:none;background:var(--accent);
+      color:white;font-weight:600;cursor:pointer;
+    }
+    .secret-close{display:block;margin-top:8px;text-align:center;color:#666;font-size:0.85rem;cursor:pointer}
+
+    /* --- Responsive pequeño --- */
+    @media (max-width:480px){
+      #gift{width:160px;height:160px}
+      .secret-panel{right:8px;width:220px}
     }
   </style>
 </head>
 <body>
-  <div id="gift"></div>
+
+  <!-- Contenido principal -->
+  <div id="gift" aria-label="Caja de regalo" title="Haz clic"></div>
   <div id="counter">Clics: 0 / 100</div>
-  <div id="timer"></div>
-  <div id="message"></div>
-  <div id="finalMessage"></div>
-  <button id="celebrateBtn">🎉 Felicidades, esto es para ti 🎁</button>
+  <div id="timer" aria-live="polite"></div>
+  <div id="message" role="status"></div>
+  <div id="finalMessage" aria-hidden="true"></div>
+  <button id="celebrateBtn" aria-hidden="true">🎉 Felicidades, esto es para ti 🎁</button>
+
   <canvas id="confettiCanvas"></canvas>
 
+  <!-- Pestaña lateral discreta (solo para ti) -->
+  <div class="secret-tab" id="secretTab" title="Pestaña de prueba (solo visible si la conoces)">🛠︎ Test</div>
+
+  <!-- Panel oculto de contraseña -->
+  <div class="secret-panel" id="secretPanel" role="dialog" aria-modal="true" aria-hidden="true">
+    <h4>Acceso de prueba</h4>
+    <input id="secretInput" type="password" placeholder="Introduce la contraseña" autocomplete="off" />
+    <button id="secretSubmit">Entrar</button>
+    <div class="secret-close" id="secretClose">Cerrar</div>
+  </div>
+
   <script>
+    /* ---------------- variables principales ---------------- */
     const gift = document.getElementById("gift");
     const counter = document.getElementById("counter");
     const timer = document.getElementById("timer");
     const message = document.getElementById("message");
     const finalMessage = document.getElementById("finalMessage");
     const celebrateBtn = document.getElementById("celebrateBtn");
+
     const canvas = document.getElementById("confettiCanvas");
     const ctx = canvas.getContext("2d");
 
     let clicks = 0;
     const maxClicks = 100;
-    const targetDate = new Date("2025-10-05T00:00:00");
+    const targetDate = new Date("2025-10-05T00:00:00"); // fecha objetivo
 
-    // Ajustar tamaño canvas confeti
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    /* Ajuste canvas al tamaño real */
+    function resizeCanvas(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
 
-    let confettiParticles = [];
-
-    function updateTimer() {
+    /* Temporizador */
+    function updateTimer(){
       const now = new Date();
       const diff = targetDate - now;
 
-      if (diff <= 0) {
+      if(diff <= 0){
         timer.textContent = "🎉 ¡Ya es el momento!";
-        openGift();
+        openGift(); // abre cuando llegue la fecha
         return;
       }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const days = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor((diff / (1000*60*60)) % 24);
+      const minutes = Math.floor((diff / (1000*60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
 
       timer.textContent = `⏳ Tiempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
+    setInterval(updateTimer,1000);
+    updateTimer();
 
-    function openGift() {
+    /* Lógica clics / abrir regalo */
+    function openGift(){
+      // Si ya está abierto, no repetir
+      if(celebrateBtn.style.display === "inline-block") return;
+      // Cambiar imagen, mostrar mensaje y botón
       gift.style.backgroundImage = "url('https://cdn-icons-png.flaticon.com/512/3468/3468371.png')";
       message.textContent = "";
       finalMessage.textContent = "💖 ¡Feliz cumpleaños amor! 💖";
       celebrateBtn.style.display = "inline-block";
+      celebrateBtn.setAttribute("aria-hidden","false");
       startConfetti();
     }
 
-    gift.addEventListener("click", () => {
-      if (clicks < maxClicks) {
+    gift.addEventListener("click", ()=>{
+      if(clicks < maxClicks){
         clicks++;
         counter.textContent = `Clics: ${clicks} / ${maxClicks}`;
       }
 
-      if (clicks >= maxClicks) {
+      if(clicks >= maxClicks){
         const now = new Date();
-        if (now >= targetDate) {
+        if(now >= targetDate){
           openGift();
         } else {
           message.textContent = "⏳ Aún no mi yaya, hasta que no sea el día no se puede 🎁";
@@ -135,50 +205,114 @@
       }
     });
 
-    // 🎉 Confeti
-    function startConfetti() {
-      for (let i = 0; i < 200; i++) {
+    celebrateBtn.addEventListener("click", ()=>{
+      // redirige a la página de la sorpresa
+      window.location.href = "sorpresa.html";
+    });
+
+    /* ---------------- confetti (canvas) ---------------- */
+    let confettiParticles = [];
+    function startConfetti(){
+      // si ya hay partículas, no duplicar
+      if(confettiParticles.length) return;
+      const total = 180;
+      for(let i=0;i<total;i++){
         confettiParticles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height - canvas.height,
-          r: Math.random() * 6 + 4,
-          d: Math.random() * 10 + 5,
-          color: `hsl(${Math.random() * 360},100%,50%)`,
-          tilt: Math.random() * 10 - 10
+          x: Math.random()*canvas.width,
+          y: Math.random()*canvas.height - canvas.height,
+          r: Math.random()*6 + 3,
+          d: Math.random()*10 + 4,
+          color: `hsl(${Math.random()*360},100%,50%)`,
+          tilt: Math.random()*15 - 7
         });
       }
       requestAnimationFrame(drawConfetti);
     }
 
-    function drawConfetti() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      confettiParticles.forEach(p => {
-        ctx.beginPath();
+    function drawConfetti(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      confettiParticles.forEach(p=>{
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.tilt * Math.PI/180);
         ctx.fillStyle = p.color;
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
-        ctx.fill();
+        ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r*1.6);
+        ctx.restore();
       });
       updateConfetti();
       requestAnimationFrame(drawConfetti);
     }
 
-    function updateConfetti() {
-      confettiParticles.forEach(p => {
-        p.y += p.d * 0.5;
-        if (p.y > canvas.height) {
+    function updateConfetti(){
+      confettiParticles.forEach(p=>{
+        p.y += p.d * 0.6;
+        p.x += Math.sin(p.y/50) * 0.7;
+        p.tilt += 0.5;
+        if(p.y > canvas.height + 20){
           p.y = -10;
-          p.x = Math.random() * canvas.width;
+          p.x = Math.random()*canvas.width;
         }
       });
     }
 
-    // Botón que lleva a la siguiente página
-    celebrateBtn.addEventListener("click", () => {
-      window.location.href = "sorpresa.html"; // tu segunda página
+    /* ---------------- PANEL SECRETO (contraseña) ---------------- */
+    const secretTab = document.getElementById("secretTab");
+    const secretPanel = document.getElementById("secretPanel");
+    const secretInput = document.getElementById("secretInput");
+    const secretSubmit = document.getElementById("secretSubmit");
+    const secretClose = document.getElementById("secretClose");
+
+    // Contraseña (cámbiala aquí si quieres). IMPORTANTE: está en el cliente.
+    const SECRET_PASSWORD = "claiko169irene";
+
+    secretTab.addEventListener("click", ()=>{
+      // alternar panel
+      if(secretPanel.style.display === "block"){
+        secretPanel.style.display = "none";
+        secretPanel.setAttribute("aria-hidden","true");
+      } else {
+        secretPanel.style.display = "block";
+        secretPanel.setAttribute("aria-hidden","false");
+        secretInput.focus();
+      }
     });
 
-    // Actualiza el temporizador cada segundo
-    setInterval(updateTimer, 1000);
+    secretClose.addEventListener("click", ()=>{
+      secretPanel.style.display = "none";
+      secretPanel.setAttribute("aria-hidden","true");
+    });
+
+    secretSubmit.addEventListener("click", checkSecret);
+    secretInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") checkSecret(); });
+
+    function checkSecret(){
+      const val = secretInput.value.trim();
+      if(val === ""){
+        alert("Introduce la contraseña");
+        return;
+      }
+      if(val === SECRET_PASSWORD){
+        // redirigir directamente a sorpresa.html para probar la segunda página
+        window.location.href = "sorpresa.html";
+      } else {
+        // feedback sutil
+        secretInput.value = "";
+        secretInput.placeholder = "Contraseña incorrecta";
+        setTimeout(()=> secretInput.placeholder = "Introduce la contraseña", 1400);
+      }
+    }
+
+    /* ---------------- accesibilidad: cerrar con ESC ---------------- */
+    document.addEventListener("keydown", (e)=>{
+      if(e.key === "Escape"){
+        if(secretPanel.style.display === "block"){
+          secretPanel.style.display = "none";
+          secretPanel.setAttribute("aria-hidden","true");
+        }
+      }
+    });
+
+    /* fin del script */
   </script>
 </body>
 </html>
