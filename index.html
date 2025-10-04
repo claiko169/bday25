@@ -10,7 +10,7 @@
       align-items: center;
       height: 100vh;
       background: #f8e1f4;
-      font-family: Arial, sans-serif;
+      font-family: "Poppins", sans-serif;
       flex-direction: column;
       text-align: center;
       overflow: hidden;
@@ -20,6 +20,10 @@
       height: 200px;
       background: url('https://cdn-icons-png.flaticon.com/512/3468/3468377.png') no-repeat center/contain;
       cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    #gift:active {
+      transform: scale(0.95);
     }
     #counter, #timer, #message {
       margin-top: 20px;
@@ -103,7 +107,7 @@
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
 
-      timer.textContent = Tiempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s;
+      timer.textContent = `⏳ Tiempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
 
     function openGift() {
@@ -117,7 +121,7 @@
     gift.addEventListener("click", () => {
       if (clicks < maxClicks) {
         clicks++;
-        counter.textContent = Clics: ${clicks} / ${maxClicks};
+        counter.textContent = `Clics: ${clicks} / ${maxClicks}`;
       }
 
       if (clicks >= maxClicks) {
@@ -131,7 +135,7 @@
       }
     });
 
-    // Confeti 🎉
+    // 🎉 Confeti
     function startConfetti() {
       for (let i = 0; i < 200; i++) {
         confettiParticles.push({
@@ -139,7 +143,7 @@
           y: Math.random() * canvas.height - canvas.height,
           r: Math.random() * 6 + 4,
           d: Math.random() * 10 + 5,
-          color: hsl(${Math.random() * 360},100%,50%),
+          color: `hsl(${Math.random() * 360},100%,50%)`,
           tilt: Math.random() * 10 - 10
         });
       }
@@ -170,7 +174,7 @@
 
     // Botón que lleva a la siguiente página
     celebrateBtn.addEventListener("click", () => {
-      window.location.href = "sorpresa.html"; // <- aquí pones tu segunda página
+      window.location.href = "sorpresa.html"; // tu segunda página
     });
 
     // Actualiza el temporizador cada segundo
