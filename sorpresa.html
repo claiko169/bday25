@@ -1,211 +1,515 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🎉 Sorpresa de Cumpleaños 🎂</title>
-
-  <!-- Librerías -->
-  <script src="https://cdn.jsdelivr.net/npm/@mojs/core"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sorpresa - Felicidades mi amor 💜</title>
 
   <style>
-    body {
-      margin: 0;
-      background: linear-gradient(135deg, #d8b7ff, #f1d4ff);
-      font-family: "Poppins", sans-serif;
-      overflow: hidden;
-      color: #663399;
-      text-align: center;
+    :root{
+      --purple-1: #eedcff;
+      --purple-2: #d6b8ff;
+      --accent: #8b5cf6;
+      --text: #3b185f;
+      --frost: #fff7ff;
     }
 
-    h1 {
-      font-size: 3em;
-      margin-top: 60px;
-      color: #5e2e91;
-      text-shadow: 2px 2px #ffffff66;
-      animation: float 3s ease-in-out infinite;
+    html,body{height:100%;margin:0;font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+    body{
+      background: radial-gradient(1200px 800px at 10% 10%, #f8eafd 0%, transparent 20%),
+                  radial-gradient(900px 700px at 90% 85%, #efe2ff 0%, transparent 20%),
+                  linear-gradient(180deg, var(--purple-1) 0%, var(--purple-2) 100%);
+      color:var(--text);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      padding:30px 20px 80px;
+      box-sizing:border-box;
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+    /* ----------------
+       BALLOON-LETTER TITLE
+       ---------------- */
+    .balloon-title{
+      display:flex;
+      gap:10px;
+      align-items:flex-end;
+      justify-content:center;
+      margin-top:10px;
+      margin-bottom:20px;
+      user-select:none;
     }
 
-    /* 🎂 Pastel animado */
-    .cake {
-      margin: 50px auto;
-      width: 100px;
-      height: 60px;
-      background: #cda4de;
-      border-radius: 10px;
-      position: relative;
-      box-shadow: 0 5px 0 #b583d4;
+    .balloon-letter{
+      width:64px;
+      height:84px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:36px;
+      font-weight:800;
+      color:white;
+      font-size:24px;
+      text-shadow:0 2px 0 rgba(0,0,0,0.12);
+      box-shadow:
+        0 10px 18px rgba(75,0,130,0.12),
+        inset -6px -12px 20px rgba(255,255,255,0.18);
+      transform-origin:50% 90%;
+      animation: bob 3s ease-in-out infinite;
+      position:relative;
+      transition:transform .2s;
     }
 
-    .cake::before {
-      content: "";
-      position: absolute;
-      top: -15px;
-      left: 20px;
-      width: 60px;
-      height: 15px;
-      background: #fff;
-      border-radius: 5px;
-      animation: drip 3s infinite;
+    .balloon-letter::after{
+      content:"";
+      position:absolute;
+      bottom:-18px;
+      width:2px;
+      height:22px;
+      left:50%;
+      transform:translateX(-50%);
+      background:linear-gradient(180deg,#f5e9ff 0%, #e4cfff 100%);
+      border-radius:2px;
     }
 
-    @keyframes drip {
-      0%, 100% { height: 15px; }
-      50% { height: 20px; }
+    /* hues for balloons */
+    .b1{ background: linear-gradient(135deg,#9b6bff,#7b3df2); animation-delay:0s; }
+    .b2{ background: linear-gradient(135deg,#cfa5ff,#9b6bff); animation-delay:.15s; }
+    .b3{ background: linear-gradient(135deg,#ffd1f7,#d69bff); animation-delay:.3s; }
+    .b4{ background: linear-gradient(135deg,#f3b8ff,#c47cff); animation-delay:.45s; }
+    .b5{ background: linear-gradient(135deg,#dfb9ff,#b482ff); animation-delay:.6s; }
+
+    @keyframes bob{
+      0% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-12px) rotate(2deg); }
+      100% { transform: translateY(0) rotate(-2deg); }
     }
 
-    .candle {
-      position: absolute;
-      top: -35px;
-      left: 45px;
-      width: 10px;
-      height: 35px;
-      background: #fff;
-      border-radius: 3px;
+    /* responsive smaller letters */
+    @media (max-width:520px){
+      .balloon-letter{ width:44px;height:64px;font-size:18px;border-radius:28px; }
     }
 
-    .flame {
-      position: absolute;
-      top: -15px;
-      left: 2px;
-      width: 6px;
-      height: 10px;
-      background: radial-gradient(circle, #ffd700, #ff4500);
-      border-radius: 50%;
-      animation: flicker 0.2s infinite;
+    /* ----------------
+       CAKE-CARD (center)
+       ---------------- */
+    .center-wrap{
+      width:100%;
+      max-width:920px;
+      margin:20px auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      padding:20px;
     }
 
-    @keyframes flicker {
-      0%, 100% { transform: scaleY(1); opacity: 1; }
-      50% { transform: scaleY(1.2); opacity: 0.8; }
+    .cake-card{
+      width:420px;
+      background: linear-gradient(180deg,#fff9ff 0%, #fff0ff 60%);
+      border-radius:20px;
+      box-shadow: 0 20px 50px rgba(80,0,120,0.15);
+      padding:18px;
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:14px;
+      border: 1px solid rgba(255,255,255,0.6);
     }
 
-    /* Confeti 🎊 */
-    .confetti {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background: #fff;
-      border-radius: 50%;
-      animation: fall linear infinite;
+    /* cake layers appearance */
+    .cake-card::before,
+    .cake-card::after {
+      content:"";
+      position:absolute;
+      left:10%;
+      right:10%;
+      height:18px;
+      border-radius:12px;
+    }
+    .cake-card::before{
+      bottom:-14px;
+      background: linear-gradient(90deg,#e6c9ff,#d9b3ff);
+      box-shadow: 0 6px 0 rgba(160,90,220,0.15);
+    }
+    .cake-card::after{
+      bottom:-36px;
+      width:80%;
+      left:10%;
+      height:12px;
+      background: linear-gradient(90deg,#eaddff,#e0c8ff);
+      border-radius:8px;
+      box-shadow: 0 4px 0 rgba(140,80,200,0.12);
     }
 
-    @keyframes fall {
-      from { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-      to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    .cake-top{
+      width:140px;height:36px;border-radius:14px;background:linear-gradient(180deg,#fff,#fff7fc);
+      border:3px solid #ffeef7;
+      box-shadow: inset -6px -6px 20px rgba(255,255,255,0.6);
+      position:relative;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .candle-on-card{
+      position:absolute; top:-28px; left:50%; transform:translateX(-50%); width:12px; height:34px; background:linear-gradient(#fff,#ffe9f6); border-radius:3px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+    }
+    .candle-flame{
+      position:absolute; top:-40px; left:50%; transform:translateX(-50%); width:12px;height:20px;
+      background: radial-gradient(circle at 40% 30%, #fff7a6 0%, #ffd24b 20%, #ff8a5a 60%, rgba(255,120,20,0.4) 100%);
+      border-radius:50%;
+      filter:drop-shadow(0 6px 8px rgba(255,140,80,0.12));
+      animation: flameFlick 0.18s infinite;
+    }
+    @keyframes flameFlick{
+      0%{ transform: translateX(-50%) scale(1); opacity:1; }
+      50%{ transform: translateX(-50%) scale(1.13); opacity:.9; }
+      100%{ transform: translateX(-50%) scale(1); opacity:1; }
     }
 
-    /* Botón música 🎵 */
-    #music-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #b583d4;
-      color: white;
-      border: none;
-      border-radius: 50px;
-      padding: 10px 20px;
-      font-size: 1em;
-      cursor: pointer;
-      box-shadow: 0 4px 10px #00000033;
-      transition: background 0.3s;
+    /* the editable message area styled as cake surface */
+    .cake-textarea{
+      width: 88%;
+      min-height: 160px;
+      resize: vertical;
+      border-radius:12px;
+      padding:14px;
+      font-size:18px;
+      line-height:1.4;
+      color:#3b185f;
+      background: linear-gradient(180deg,#fffafc,#fff0ff);
+      border:2px dashed rgba(139,92,246,0.12);
+      box-shadow: inset 0 6px 18px rgba(160,110,220,0.03);
+      outline:none;
     }
 
-    #music-btn:hover {
-      background: #9f6ac5;
+    .cake-textarea:focus{
+      box-shadow: 0 8px 30px rgba(139,92,246,0.14);
+      border-color: rgba(139,92,246,0.28);
+      background: linear-gradient(180deg,#fff,#fff7ff);
+    }
+
+    .hint{
+      font-size:14px;color:#6f4b9a;opacity:0.9;margin-bottom:4px;
+    }
+
+    /* ----------------
+       BALLOONS AT SIDES
+       ---------------- */
+    .side-balloons{
+      position:absolute;
+      top:110px;
+      bottom:0;
+      left:8px;
+      display:flex;
+      flex-direction:column;
+      gap:24px;
+      align-items:flex-start;
+      pointer-events:none;
+      z-index:2;
+    }
+    .side-balloons.right{ right:8px; left:auto; align-items:flex-end; }
+
+    .balloon{
+      width:68px;height:92px;border-radius:50% 50% 46% 46%;
+      display:flex;align-items:center;justify-content:center;
+      color:white;font-weight:700; text-shadow:0 2px 6px rgba(0,0,0,0.15);
+      transform-origin:center bottom;
+      box-shadow: 0 12px 30px rgba(110,50,170,0.12), inset -8px -12px 18px rgba(255,255,255,0.15);
+      position:relative;
+      animation: floatUp linear infinite;
+    }
+    .balloon::after{
+      content:""; position:absolute; bottom:-22px; left:50%; transform:translateX(-50%); width:3px; height:22px; background:linear-gradient(180deg,#fff0ff, #e4cfff); border-radius:2px;
+    }
+
+    .balloon.p1{ background: linear-gradient(135deg,#b084ff,#7b3df2); animation-duration:12s; animation-delay:0s; }
+    .balloon.p2{ background: linear-gradient(135deg,#f3b8ff,#c47cff); animation-duration:14s; animation-delay:2s; width:56px;height:76px; }
+    .balloon.p3{ background: linear-gradient(135deg,#ffd1f7,#d69bff); animation-duration:11s; animation-delay:4s; }
+    .balloon.p4{ background: linear-gradient(135deg,#e7c2ff,#b482ff); animation-duration:13s; animation-delay:1s; width:60px;height:84px; }
+
+    @keyframes floatUp{
+      0%{ transform: translateY(30vh) scale(1) rotate(-6deg); opacity:0; }
+      10%{ opacity:1; }
+      50%{ transform: translateY(10vh) scale(1.03) rotate(6deg); }
+      100%{ transform: translateY(-40vh) scale(0.96) rotate(-4deg); opacity:0; }
+    }
+
+    /* ----------------
+       CONFETTI
+       ---------------- */
+    .confetti-piece{
+      position:fixed;
+      width:10px;height:14px; border-radius:3px; opacity:0.95;
+      transform-origin:center;
+      z-index:3;
+      pointer-events:none;
+      will-change: transform, opacity;
+    }
+
+    /* ----------------
+       MUSIC BUTTON
+       ---------------- */
+    .music-btn{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      z-index:6;
+      border:0;
+      background:linear-gradient(180deg,#8b5cf6,#6b2fe6);
+      color:white;
+      padding:10px 14px;border-radius:999px;
+      font-size:15px; cursor:pointer;
+      box-shadow:0 10px 24px rgba(120,60,220,0.22);
+    }
+
+    .small-help{
+      position:fixed; left:18px; bottom:22px; background:rgba(255,255,255,0.6); padding:8px 12px; border-radius:12px; font-size:13px; color:var(--text);
+      box-shadow: 0 8px 18px rgba(100,50,150,0.06);
+      z-index:6;
+    }
+
+    /* make it look nicer on mobile */
+    @media (max-width:700px){
+      .cake-card{ width:92%; }
+      .balloon-title{ gap:6px; margin-top:6px; }
+      .balloon-letter{ width:46px;height:62px;font-size:18px; }
     }
   </style>
 </head>
 <body>
 
-  <h1>🎂 ¡Feliz Cumpleaños, Mi Amor! 💜</h1>
+  <!-- BALLOON TITLE -->
+  <div class="balloon-title" aria-hidden="true" id="title">
+    <!-- We'll make each letter a "balloon-letter" -->
+    <!-- "Felicidades mi amor" -> we'll split -->
+  </div>
 
-  <div class="cake">
-    <div class="candle">
-      <div class="flame"></div>
+  <!-- CENTER: cake-card that is actually a writable card -->
+  <div class="center-wrap">
+    <div class="cake-card" role="region" aria-label="Carta en forma de tarta">
+      <div class="cake-top" aria-hidden="true">
+        <div class="candle-on-card"></div>
+        <div class="candle-flame" aria-hidden="true"></div>
+      </div>
+
+      <div class="hint">Escribe aquí tu mensaje para ella — pon todo tu amor 💌</div>
+
+      <textarea class="cake-textarea" id="message" placeholder="Querida... escribe lo que sientas ❤️"></textarea>
+
+      <button id="save-btn" style="background:linear-gradient(180deg,#ffd6f9,#f4d6ff); border:0; border-radius:10px; padding:8px 12px; cursor:pointer; color:#4a1660; font-weight:700;">
+        Guardar mensaje (se descargará como archivo .txt)
+      </button>
     </div>
   </div>
 
-  <p>Con todo mi amor, te deseo un día lleno de magia y sonrisas 💖</p>
+  <!-- SIDE balloons -->
+  <div class="side-balloons left" id="leftBalloons" aria-hidden="true">
+    <div class="balloon p1">💜</div>
+    <div class="balloon p2">🌸</div>
+    <div class="balloon p3">✨</div>
+  </div>
 
-  <!-- Música -->
-  <audio id="bg-music" autoplay loop>
+  <div class="side-balloons right" id="rightBalloons" aria-hidden="true">
+    <div class="balloon p4">💖</div>
+    <div class="balloon p2">🎀</div>
+    <div class="balloon p1">🌷</div>
+  </div>
+
+  <!-- Confetti container will be generated by JS -->
+
+  <!-- Music audio (use a friendly free clip). -->
+  <audio id="bg-audio" loop preload="auto">
+    <!-- Fuente libre: puedes cambiar por tu mp3 si tienes -->
     <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2b9bfb6a91.mp3?filename=happy-birthday-125906.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio.
   </audio>
-  <button id="music-btn">⏸️ Pausar música</button>
+
+  <button class="music-btn" id="musicToggle" aria-pressed="false">⏵️ Música</button>
+  <div class="small-help">Toque la tarta para enfocar/editar</div>
 
   <script>
-    // 🌈 Música control
-    const music = document.getElementById('bg-music');
-    const btn = document.getElementById('music-btn');
-    let playing = true;
-    btn.onclick = () => {
-      if (playing) {
-        music.pause();
-        btn.textContent = '▶️ Reproducir música';
-      } else {
-        music.play();
+    /* ----------------------
+       TÍTULO: letras como globos
+       ---------------------- */
+    const titleText = "FELICIDADES MI AMOR";
+    const title = document.getElementById('title');
+
+    // create a balloon-letter per character (spaces -> gap)
+    for(let i=0;i<titleText.length;i++){
+      const ch = titleText[i];
+      if(ch === ' ') {
+        const spacer = document.createElement('div');
+        spacer.style.width = '12px';
+        title.appendChild(spacer);
+        continue;
+      }
+      const span = document.createElement('div');
+      span.className = 'balloon-letter b' + ((i % 5) + 1);
+      span.textContent = ch;
+      // slight random float offset for variety
+      span.style.animationDelay = (Math.random()*0.6)+'s';
+      // a tiny playful pop when clicked
+      span.addEventListener('click', ()=> {
+        span.animate([
+          { transform: 'scale(1)'},
+          { transform: 'scale(1.12) rotate(-6deg)'},
+          { transform: 'scale(1) rotate(0deg)'}
+        ], {duration:300, easing:'cubic-bezier(.2,.9,.2,1)'});
+      });
+      title.appendChild(span);
+    }
+
+    /* ----------------------
+       CONFETTI GENERATOR
+       ---------------------- */
+    const colors = ['#FFD6F9','#EED2FF','#CDA4DE','#F7C8FF','#FEE2FF','#BDA1FF','#FAD6EA'];
+    function makeConfettiPiece(){
+      const d = document.createElement('div');
+      d.className = 'confetti-piece';
+      d.style.width = (6 + Math.random()*12) + 'px';
+      d.style.height = (8 + Math.random()*14) + 'px';
+      d.style.left = (Math.random() * 100) + 'vw';
+      d.style.top = (-10 - Math.random()*20) + 'vh';
+      d.style.background = colors[Math.floor(Math.random()*colors.length)];
+      d.style.borderRadius = (Math.random()*6)+'px';
+      d.style.transform = `rotate(${Math.random()*360}deg)`;
+      const duration = 3500 + Math.random()*3000;
+      d.style.transition = `transform ${duration}ms linear, top ${duration}ms linear, opacity ${duration}ms linear`;
+      document.body.appendChild(d);
+
+      // animate using rAF to final position
+      requestAnimationFrame(()=>{
+        d.style.top = (110 + Math.random()*20) + 'vh';
+        const tx = (Math.random()*80 - 40);
+        d.style.transform = `translateX(${tx}px) rotate(${Math.random()*720-360}deg)`;
+        d.style.opacity = '0';
+      });
+
+      // remove after done
+      setTimeout(()=> d.remove(), duration + 80);
+    }
+
+    // continuous confetti
+    setInterval(()=> {
+      // produce bursts
+      const burst = 6 + Math.floor(Math.random()*10);
+      for(let i=0;i<burst;i++){
+        setTimeout(makeConfettiPiece, i*40);
+      }
+    }, 900);
+
+    /* ----------------------
+       SIDE BALLOONS LOOP (recreate periodically so variety)
+       ---------------------- */
+    function floatSideBalloons(){
+      const left = document.getElementById('leftBalloons');
+      const right = document.getElementById('rightBalloons');
+      // randomize positions
+      Array.from(left.children).forEach((el, i) => {
+        el.style.left = (5 + Math.random()*18) + 'px';
+        el.style.animationDuration = (10 + Math.random()*8) + 's';
+        el.style.animationDelay = (Math.random()*2) + 's';
+      });
+      Array.from(right.children).forEach((el,i) => {
+        el.style.right = (5 + Math.random()*18) + 'px';
+        el.style.animationDuration = (10 + Math.random()*8) + 's';
+        el.style.animationDelay = (Math.random()*2) + 's';
+      });
+    }
+    floatSideBalloons();
+    // refresh settings every 7s so they re-float differently
+    setInterval(floatSideBalloons,7000);
+
+    /* ----------------------
+       MUSIC CONTROL
+       ---------------------- */
+    const audio = document.getElementById('bg-audio');
+    const btn = document.getElementById('musicToggle');
+    let playing = false;
+
+    // try autoplay (may be blocked by browser) — handle promise
+    function tryPlay() {
+      audio.play().then(()=> {
+        playing = true;
         btn.textContent = '⏸️ Pausar música';
+        btn.setAttribute('aria-pressed','true');
+      }).catch((e)=>{
+        // autoplay blocked — show play state on button
+        playing = false;
+        btn.textContent = '⏵️ Música';
+        btn.setAttribute('aria-pressed','false');
+      });
+    }
+    tryPlay();
+
+    btn.addEventListener('click', ()=>{
+      if(playing){
+        audio.pause();
+        btn.textContent = '⏵️ Música';
+        btn.setAttribute('aria-pressed','false');
+      } else {
+        audio.play();
+        btn.textContent = '⏸️ Pausar música';
+        btn.setAttribute('aria-pressed','true');
       }
       playing = !playing;
-    };
+    });
 
-    // 🎉 Confeti aleatorio
-    for (let i = 0; i < 40; i++) {
-      const c = document.createElement("div");
-      c.classList.add("confetti");
-      c.style.left = Math.random() * 100 + "vw";
-      c.style.background = `hsl(${Math.random() * 360}, 70%, 80%)`;
-      c.style.animationDuration = 3 + Math.random() * 3 + "s";
-      c.style.width = c.style.height = 5 + Math.random() * 8 + "px";
-      document.body.appendChild(c);
-    }
+    /* ----------------------
+       SAVE MESSAGE (descarga txt)
+       ---------------------- */
+    const saveBtn = document.getElementById('save-btn');
+    const textarea = document.getElementById('message');
 
-    // 💌 Código Letter
-    function Letter(char, x, y) {
-      this.char = char;
-      this.x = x;
-      this.y = y;
-      this.dx = -50 / 2;
-      this.dy = 10;
-      this.fireworkDy = this.y - window.innerHeight / 2;
-      const hue = (x / window.innerWidth) * 360;
-      this.color = `hsl(${hue}, 80%, 50%)`;
-      this.lightColor = `hsl(${hue}, 80%, 70%)`;
-      this.alphaColor = `hsla(${hue}, 80%, 50%, 0.5)`;
-      this.reset();
-    }
+    saveBtn.addEventListener('click', ()=>{
+      const text = textarea.value || '';
+      const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mensaje_para_mi_amor.txt';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      // small confirmation
+      saveBtn.textContent = '✅ Guardado';
+      setTimeout(()=> saveBtn.textContent = 'Guardar mensaje (se descargará como archivo .txt)', 1800);
+    });
 
-    Letter.prototype.reset = function () {
-      this.phase = "firework";
-      this.tick = 0;
-      this.spawned = false;
-      this.spawningTime = (100 + Math.random() * 50) | 0;
-    };
+    /* ----------------------
+       Usability: focus textarea when tapping cake area
+       ---------------------- */
+    const cakeCard = document.querySelector('.cake-card');
+    cakeCard.addEventListener('click', () => {
+      textarea.focus();
+      // tiny pulse
+      cakeCard.animate([
+        { transform: 'scale(1)' },
+        { transform: 'scale(1.01)' },
+        { transform: 'scale(1)' }
+      ], { duration: 240, easing:'ease-out' });
+    });
 
-    // 💥 Animación mo.js
-    const crtLoveTL = () => {
-      const move = 1000;
-      const easing = "sin.inOut";
-      const opts = { duration: move, easing, opacity: 1 };
-      const el = { l: document.querySelector("h1") };
+    /* ----------------------
+       Accessibility: allow saving with Ctrl+S while focused in textarea
+       ---------------------- */
+    textarea.addEventListener('keydown', (ev) => {
+      if((ev.ctrlKey||ev.metaKey) && ev.key.toLowerCase() === 's'){
+        ev.preventDefault();
+        saveBtn.click();
+      }
+    });
 
-      return new mojs.Timeline().add([
-        new mojs.Tween({
-          duration: move,
-          onComplete: () => {
-            el.l.style.opacity = 0;
-          }
-        }),
-      ]);
-    };
-
-    crtLoveTL().play();
+    /* ----------------------
+       Small nicety: gentle entrance animation on load
+       ---------------------- */
+    window.addEventListener('load', ()=> {
+      document.body.animate([{opacity:0},{opacity:1}], {duration:600,easing:'ease-out'});
+    });
   </script>
 
 </body>
