@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Regalo de cumpleaños</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f8e1f4;
+      font-family: Arial, sans-serif;
+      flex-direction: column;
+      text-align: center;
+      overflow: hidden;
+    }
+    #gift {
+      width: 200px;
+      height: 200px;
+      background: url('https://cdn-icons-png.flaticon.com/512/3468/3468377.png') no-repeat center/contain;
+      cursor: pointer;
+    }
+    #counter, #timer, #message {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+    #message {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #d63384;
+    }
+    #finalMessage {
+      font-size: 2em;
+      font-weight: bold;
+      color: #d63384;
+      margin-top: 30px;
+    }
+    #celebrateBtn {
+      display: none;
+      margin-top: 40px;
+      padding: 15px 25px;
+      font-size: 1.5em;
+      background: #ff4d88;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    #celebrateBtn:hover {
+      background: #e60073;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="gift"></div>
+  <div id="counter">Clics: 0 / 100</div>
+  <div id="timer"></div>
+  <div id="message"></div>
+  <div id="finalMessage"></div>
+  <button id="celebrateBtn">🎉 Felicidades, esto es para ti 🎁</button>
+  <canvas id="confettiCanvas"></canvas>
+
+  <script>
+    const gift = document.getElementById("gift");
+    const counter = document.getElementById("counter");
+    const timer = document.getElementById("timer");
+    const message = document.getElementById("message");
+    const finalMessage = document.getElementById("finalMessage");
+    const celebrateBtn = document.getElementById("celebrateBtn");
+    const canvas = document.getElementById("confettiCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let clicks = 0;
+    const maxClicks = 100;
+    const targetDate = new Date("2025-10-05T00:00:00");
+
+    // Ajustar tamaño canvas confeti
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let confettiParticles = [];
+
+    function updateTimer() {
+      const now = new Date();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        timer.textContent = "🎉 ¡Ya es el momento!";
+        openGift();
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      timer.textContent = Tiempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s;
+    }
+
+    function openGift() {
+      gift.style.backgroundImage = "url('https://cdn-icons-png.flaticon.com/512/3468/3468371.png')";
+      message.textContent = "";
+      finalMessage.textContent = "💖 ¡Feliz cumpleaños amor! 💖";
+      celebrateBtn.style.display = "inline-block";
+      startConfetti();
+    }
+
+    gift.addEventListener("click", () => {
+      if (clicks < maxClicks) {
+        clicks++;
+        counter.textContent = Clics: ${clicks} / ${maxClicks};
+      }
+
+      if (clicks >= maxClicks) {
+        const now = new Date();
+        if (now >= targetDate) {
+          openGift();
+        } else {
+          message.textContent = "⏳ Aún no mi yaya, hasta que no sea el día no se puede 🎁";
+          timer.style.display = "block";
+        }
+      }
+    });
+
+    // Confeti 🎉
+    function startConfetti() {
+      for (let i = 0; i < 200; i++) {
+        confettiParticles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          r: Math.random() * 6 + 4,
+          d: Math.random() * 10 + 5,
+          color: hsl(${Math.random() * 360},100%,50%),
+          tilt: Math.random() * 10 - 10
+        });
+      }
+      requestAnimationFrame(drawConfetti);
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiParticles.forEach(p => {
+        ctx.beginPath();
+        ctx.fillStyle = p.color;
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+        ctx.fill();
+      });
+      updateConfetti();
+      requestAnimationFrame(drawConfetti);
+    }
+
+    function updateConfetti() {
+      confettiParticles.forEach(p => {
+        p.y += p.d * 0.5;
+        if (p.y > canvas.height) {
+          p.y = -10;
+          p.x = Math.random() * canvas.width;
+        }
+      });
+    }
+
+    // Botón que lleva a la siguiente página
+    celebrateBtn.addEventListener("click", () => {
+      window.location.href = "sorpresa.html"; // <- aquí pones tu segunda página
+    });
+
+    // Actualiza el temporizador cada segundo
+    setInterval(updateTimer, 1000);
+  </script>
+</body>
+</html>
